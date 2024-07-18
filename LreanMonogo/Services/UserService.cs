@@ -1,13 +1,13 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using LearnMongo.Models;
-using LearnMongo.Resource;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using MyFinancePal.Models;
+using MyFinancePal.Resource;
 
-namespace LearnMongo.Services
+namespace MyFinancePal.Services
 {
 
     public interface IUserService

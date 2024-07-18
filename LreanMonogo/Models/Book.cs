@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
-    namespace LearnMongo.Models
+    namespace MyFinancePal.Models
     {
     public class Book
     {

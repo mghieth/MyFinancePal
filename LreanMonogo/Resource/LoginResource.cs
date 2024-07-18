@@ -1,4 +1,4 @@
-﻿namespace LearnMongo.Resource
+﻿namespace MyFinancePal.Resource
 {
     public class LoginResource
     {

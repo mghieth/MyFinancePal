@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
-namespace LearnMongo.Models
+namespace MyFinancePal.Models
 {
     public class Transactions
     {

@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using System.Text.Json.Serialization;
 
-namespace LearnMongo.Models
+namespace MyFinancePal.Models
 {
     public class Student
     {

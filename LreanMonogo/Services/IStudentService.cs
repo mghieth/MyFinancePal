@@ -1,7 +1,7 @@
-﻿using LearnMongo.Models;
-using LearnMongo.Resource;
+﻿using MyFinancePal.Models;
+using MyFinancePal.Resource;
 
-namespace LearnMongo.Services
+namespace MyFinancePal.Services
 {
     public interface IStudentService
     {

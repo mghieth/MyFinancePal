@@ -1,4 +1,4 @@
-﻿namespace LearnMongo.Models
+﻿namespace MyFinancePal.Models
 {
     public class Login
     {

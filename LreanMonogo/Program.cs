@@ -1,7 +1,7 @@
 using System.Text;
 using Amazon.Runtime.Internal.Transform;
-using LearnMongo.Models;
-using LearnMongo.Services;
+using MyFinancePal.Models;
+using MyFinancePal.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;

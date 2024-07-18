@@ -1,4 +1,4 @@
-﻿namespace LearnMongo.Services
+﻿namespace MyFinancePal.Services
 {
     public interface IInvestment
     {

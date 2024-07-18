@@ -1,10 +1,10 @@
-﻿using LearnMongo.Models;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Linq;
-using LearnMongo.Resource;
+using MyFinancePal.Models;
+using MyFinancePal.Resource;
 
-namespace LearnMongo.Services
+namespace MyFinancePal.Services
 {
     public class StudentsService: IStudentService
     {

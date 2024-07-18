@@ -1,9 +1,9 @@
-﻿using LearnMongo.Models;
-using LearnMongo.Resource;
+﻿using MyFinancePal.Resource;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using MyFinancePal.Models;
 
-namespace LearnMongo.Services
+namespace MyFinancePal.Services
 {
     public interface ITransactionService
     {

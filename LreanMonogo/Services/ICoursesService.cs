@@ -1,8 +1,8 @@
-﻿using LearnMongo.Models;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using MyFinancePal.Models;
 
-namespace LearnMongo.Services
+namespace MyFinancePal.Services
 {
     public interface ICoursesService
     {

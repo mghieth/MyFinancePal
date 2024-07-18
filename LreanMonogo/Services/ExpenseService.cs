@@ -1,6 +1,6 @@
-﻿using LearnMongo.Models;
+﻿using MyFinancePal.Models;
 
-namespace LearnMongo.Services
+namespace MyFinancePal.Services
 {
     public class ExpenseService: ITransactionService
     {

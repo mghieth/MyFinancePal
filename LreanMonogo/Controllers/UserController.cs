@@ -1,9 +1,9 @@
-﻿using LearnMongo.Models;
-using LearnMongo.Resource;
-using LearnMongo.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using MyFinancePal.Models;
+using MyFinancePal.Resource;
+using MyFinancePal.Services;
 
-namespace LearnMongo.Controllers
+namespace MyFinancePal.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

@@ -1,4 +1,4 @@
-namespace LearnMongo
+namespace MyFinancePal
 {
     public class WeatherForecast
     {

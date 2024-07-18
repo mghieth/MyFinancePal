@@ -1,6 +1,6 @@
-﻿using LearnMongo.Models;
+﻿using MyFinancePal.Models;
 
-namespace LearnMongo.Resource
+namespace MyFinancePal.Resource
 {
     public class StudentResource
     {

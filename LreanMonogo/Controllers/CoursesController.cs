@@ -1,8 +1,8 @@
-﻿using LearnMongo.Models;
-using LearnMongo.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using MyFinancePal.Models;
+using MyFinancePal.Services;
 
-namespace LearnMongo.Controllers
+namespace MyFinancePal.Controllers
 {
     public class CoursesController : ControllerBase
     {

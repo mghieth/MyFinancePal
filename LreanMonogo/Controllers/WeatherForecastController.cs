@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace LearnMongo.Controllers
+namespace MyFinancePal.Controllers
 {
     [ApiController]
     [Route("[controller]")]
