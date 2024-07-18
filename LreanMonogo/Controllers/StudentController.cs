@@ -1,11 +1,14 @@
 ﻿using LearnMongo.Models;
+using LearnMongo.Resource;
 using LearnMongo.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnMongo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class StudentController : ControllerBase
     {
         private readonly IStudentService _studentsServices;
@@ -15,12 +18,13 @@ namespace LearnMongo.Controllers
 
 
         [HttpGet]
-        public async Task<List<Student>> Get() =>
+       
+        public async Task<List<StudentResource>> Get() =>
             await _studentsServices.GetAsync();
 
         [HttpGet("{id:length(24)}")]
 
-        public async Task<ActionResult<Student>> Get(string id)
+        public async Task<ActionResult<StudentResource>> Get(string id)
         {
             var student = await _studentsServices.GetAsync(id);
 
@@ -37,7 +41,9 @@ namespace LearnMongo.Controllers
         {
             await _studentsServices.CreateAsync(newsStudent);
 
-            return CreatedAtAction(nameof(Get), new {id = newsStudent.Id}, newsStudent);
+           // return CreatedAtAction(nameof(Get), new {id = newsStudent.Id}, newsStudent);
+
+           return Ok(await _studentsServices.GetAsync());
         }
 
         [HttpPut("{id:length(24)}")]
@@ -53,7 +59,7 @@ namespace LearnMongo.Controllers
             updateStudent.Id = student.Id;
              await _studentsServices.UpdateAsync(id, updateStudent);
 
-             return NoContent();
+             return Ok(await _studentsServices.GetAsync());
         }
 
         [HttpDelete("{id:length(24)}")]
@@ -68,7 +74,7 @@ namespace LearnMongo.Controllers
 
             await _studentsServices.RemoveAsync(id);
 
-            return NoContent();
+            return Ok(await _studentsServices.GetAsync());
         }
     }
 }
