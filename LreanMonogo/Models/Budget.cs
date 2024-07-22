@@ -1,11 +1,16 @@
-﻿namespace MyFinancePal.Models
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+
+namespace MyFinancePal.Models
 {
     public class Budget
     {
-        public string Id { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id { get; set; }
 
-        public string UserId { get; set; }
-
+        public string? UserId { get; set; }
+            
         public DateTime Month { get; set; }
 
         public double TotalBudget { get; set; }

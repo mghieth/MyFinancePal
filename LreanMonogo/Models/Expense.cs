@@ -1,6 +1,6 @@
 ﻿namespace MyFinancePal.Models
 {
-    public class Expense
+    public class Expense : Transactions
     {
         public string PaymentMethod { get; set; }
     }

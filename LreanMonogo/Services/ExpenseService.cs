@@ -9,6 +9,11 @@ namespace MyFinancePal.Services
             throw new NotImplementedException();
         }
 
+        public Task<List<Transactions>> GetAllAsync(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Transactions?> GetAsync(string id)
         {
             throw new NotImplementedException();

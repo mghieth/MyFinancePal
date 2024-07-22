@@ -15,6 +15,7 @@
 
         public string UsersCollectionName { get; set; } = null!;
         public string TransactionsCollectionName { get; set; } = null!;
+        public string BudgetCollectionName { get; set; } = null!;
 
     }
 }

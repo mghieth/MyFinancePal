@@ -7,7 +7,7 @@ namespace MyFinancePal.Services
 {
     public interface ITransactionService
     {
-        public Task<List<Transactions>> GetAsync();
+        public Task<List<Transactions>> GetAllAsync(string userId);
 
         public Task<Transactions?> GetAsync(string id);
 
@@ -34,9 +34,9 @@ namespace MyFinancePal.Services
                 bookStoreDatabaseSettings.Value.TransactionsCollectionName);
         }
 
-        public async Task<List<Transactions>> GetAsync()
+        public async Task<List<Transactions>> GetAllAsync(string userId)
         {
-            var transactions = await _transactionsCollection.Find(_ => true).ToListAsync();
+            var transactions = await _transactionsCollection.Find(x => x.UserId == userId).ToListAsync();
 
             return transactions;
         }

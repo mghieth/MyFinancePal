@@ -17,8 +17,8 @@ namespace MyFinancePal.Controllers
         }
 
         [HttpGet]
-        public async Task<List<Transactions>> Get() =>
-            await _transactionService.GetAsync();
+        public async Task<List<Transactions>> GetAllAsync(string userId) =>
+            await _transactionService.GetAllAsync(userId);
 
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<Transactions>> Get(string id)
@@ -39,7 +39,7 @@ namespace MyFinancePal.Controllers
         {
             await _transactionService.AddTransaction(newsTran);
 
-            return Ok(await _transactionService.GetAsync());
+            return Ok(await _transactionService.GetAllAsync(newsTran.UserId));
         }
 
         [HttpPut("{id:length(24)}")]
@@ -56,11 +56,11 @@ namespace MyFinancePal.Controllers
 
             await _transactionService.EditTransaction(id, updateTran);
 
-            return Ok(await _transactionService.GetAsync());
+            return Ok(await _transactionService.GetAllAsync(updateTran.UserId));
         }
 
         [HttpDelete("{id:length(24)}")]
-        public async Task<IActionResult> Remove(string id)
+        public async Task<IActionResult> Remove(string id,string userId)
         {
             var student = await _transactionService.GetAsync(id);
 
@@ -71,7 +71,7 @@ namespace MyFinancePal.Controllers
 
             await _transactionService.RemoveTransaction(id);
 
-            return Ok(await _transactionService.GetAsync());
+            return Ok(await _transactionService.GetAllAsync(userId));
         }
     }
 }

@@ -61,6 +61,7 @@ namespace MyFinancePal.Services
 
           resource.Token= Authenticate(user.Name, user.Password);
           resource.Result = true;
+          resource.UserId = user.Id;
 
           return resource;
 
