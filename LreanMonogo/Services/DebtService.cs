@@ -1,37 +1,51 @@
-﻿using MyFinancePal.Models;
+﻿using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+using MyFinancePal.Models;
 
 namespace MyFinancePal.Services
 {
-    public interface IDeptService: IService<Debt>
+    public interface IDebtService: IService<Debt>
     {
 
     }
 
-    public class DebtService : IDeptService
+    public class DebtService : IDebtService
     {
-        public Task<List<Debt>> GetAllAsync(string userId)
+        private readonly IMongoCollection<Debt> _debtCollection;
+
+        public DebtService(IOptions<BookStoreDatabaseSettings> bookStoreDatabaseSettings)
         {
-            throw new NotImplementedException();
+            var mongoClient = new MongoClient(
+                bookStoreDatabaseSettings.Value.ConnectionString);
+
+            var mongoDatabase = mongoClient.GetDatabase(
+                bookStoreDatabaseSettings.Value.DatabaseName);
+
+            _debtCollection = mongoDatabase.GetCollection<Debt>(
+                bookStoreDatabaseSettings.Value.DebtCollectionName);
         }
 
-        public Task<Debt?> GetAsync(string id)
+        public async Task<List<Debt>> GetAllAsync(string userId)
         {
-            throw new NotImplementedException();
+            return await _debtCollection.Find(x => x.UserId == userId).ToListAsync();
         }
 
-        public Task Create(Debt newT)
+        public async Task<Debt?> GetAsync(string id) => await _debtCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+       
+
+        public async Task Create(Debt newDebt)
         {
-            throw new NotImplementedException();
+            await _debtCollection.InsertOneAsync(newDebt);
         }
 
-        public Task Update(string id, Debt updateT)
+        public async Task Update(string id, Debt updateDebt)
         {
-            throw new NotImplementedException();
+            await _debtCollection.ReplaceOneAsync(x => x.Id == id, updateDebt);
         }
 
-        public Task Remove(string id)
+        public async Task Remove(string id)
         {
-            throw new NotImplementedException();
+            await _debtCollection.DeleteOneAsync(x => x.Id == id);
         }
 
         public Task View()

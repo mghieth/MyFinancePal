@@ -8,21 +8,21 @@ namespace MyFinancePal.Controllers
     [Route("api/[controller]")]
     public class BudgetController : ControllerBase
     {
-        private readonly IBudgetService _budgetServiceService;
+        private readonly IBudgetService _budgetService;
 
         public BudgetController(IBudgetService budgetService)
         {
-            _budgetServiceService = budgetService;
+            _budgetService = budgetService;
         }
 
         [HttpGet]
         public async Task<List<Budget>> GetAllAsync(string userId) =>
-            await _budgetServiceService.GetAllAsync(userId);
+            await _budgetService.GetAllAsync(userId);
 
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<Budget>> Get(string id)
         {
-            var budget = await _budgetServiceService.GetAsync(id);
+            var budget = await _budgetService.GetAsync(id);
 
             if (budget is null)
             {
@@ -35,15 +35,15 @@ namespace MyFinancePal.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(Budget newBudget)
         {
-            await _budgetServiceService.Create(newBudget);
+            await _budgetService.Create(newBudget);
 
-            return Ok(await _budgetServiceService.GetAllAsync(newBudget.UserId));
+            return Ok(await _budgetService.GetAllAsync(newBudget.UserId));
         }
 
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update(string id, Budget updateBudget)
         {
-            var budget = await _budgetServiceService.GetAsync(id);
+            var budget = await _budgetService.GetAsync(id);
 
             if (budget is null)
             {
@@ -52,24 +52,24 @@ namespace MyFinancePal.Controllers
 
             updateBudget.Id = budget.Id;
 
-            await _budgetServiceService.Update(id, updateBudget);
+            await _budgetService.Update(id, updateBudget);
 
-            return Ok(await _budgetServiceService.GetAllAsync(updateBudget.UserId));
+            return Ok(await _budgetService.GetAllAsync(updateBudget.UserId));
         }
 
         [HttpDelete("{id:length(24)}")]
         public async Task<IActionResult> Remove(string id, string userId)
         {
-            var budget = await _budgetServiceService.GetAsync(id);
+            var budget = await _budgetService.GetAsync(id);
 
             if (budget is null)
             {
                 return NotFound();
             }
 
-            await _budgetServiceService.Remove(id);
+            await _budgetService.Remove(id);
 
-            return Ok(await _budgetServiceService.GetAllAsync(userId));
+            return Ok(await _budgetService.GetAllAsync(userId));
         }
     }
 }

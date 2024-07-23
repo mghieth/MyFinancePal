@@ -1,10 +1,15 @@
-﻿namespace MyFinancePal.Models
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+
+namespace MyFinancePal.Models
 {
     public class Debt
     {
-        public string Id { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id { get; set; }
 
-        public string UserID { get; set; }
+        public string? UserId { get; set; }
 
         public string DebtType { get; set; }
 

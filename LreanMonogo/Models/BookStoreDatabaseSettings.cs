@@ -22,6 +22,7 @@
         public string SavingGoalCollectionName { get; set; } = null!;
         public string InvestmentCollectionName { get; set; } = null!;
 
+        public string DebtCollectionName { get; set; } = null!;
 
     }
 }
