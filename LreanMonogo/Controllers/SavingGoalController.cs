@@ -36,7 +36,7 @@ namespace MyFinancePal.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(SavingGoal newSavingGoal)
         {
-            await _savingGoalService.CreateGoal(newSavingGoal);
+            await _savingGoalService.Create(newSavingGoal);
 
             return Ok(await _savingGoalService.GetAllAsync(newSavingGoal.UserId));
         }
@@ -53,9 +53,25 @@ namespace MyFinancePal.Controllers
 
             savingGoalUGoal.Id = savingGoal.Id;
 
-            await _savingGoalService.UpdateGoal(id, savingGoalUGoal);
+            await _savingGoalService.Update(id, savingGoalUGoal);
 
             return Ok(await _savingGoalService.GetAllAsync(savingGoalUGoal.UserId));
+        }
+
+
+        [HttpDelete("{id:length(24)}")]
+        public async Task<IActionResult> Remove(string id, string userId)
+        {
+            var goal = await _savingGoalService.GetAsync(id);
+
+            if (goal is null)
+            {
+                return NotFound();
+            }
+
+            await _savingGoalService.Remove(id);
+
+            return Ok(await _savingGoalService.GetAllAsync(userId));
         }
     }
 }

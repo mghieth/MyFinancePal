@@ -19,17 +19,22 @@ namespace MyFinancePal.Services
             throw new NotImplementedException();
         }
 
-        public Task AddTransaction(Transactions newTran)
+        public Task Create(Transactions newTran)
         {
             throw new NotImplementedException();
         }
 
-        public Task EditTransaction(string id, Transactions updateTran)
+        public Task Update(string id, Transactions updateTran)
         {
             throw new NotImplementedException();
         }
 
-        public Task RemoveTransaction(string id)
+        public Task Remove(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task View()
         {
             throw new NotImplementedException();
         }

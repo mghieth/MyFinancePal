@@ -4,16 +4,9 @@ using MyFinancePal.Models;
 
 namespace MyFinancePal.Services
 {
-    public interface IBudgetService
+    public interface IBudgetService:IService<Budget>
     {
-        public Task<List<Budget>> GetAllAsync(string userId);
-
-        public Task<Budget?> GetAsync(string id);
-        public Task CreateBudget(Budget newBudget);
-
-        public Task UpdateBudget(string id, Budget updateBudget);
-
-        public Task ViewBudget();
+       
     }
 
     public class BudgetService:IBudgetService
@@ -40,17 +33,22 @@ namespace MyFinancePal.Services
 
         public async Task<Budget?> GetAsync(string id) => await _budgetCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task CreateBudget(Budget newBudget)
+        public async Task Create(Budget newBudget)
         {
             await _budgetCollection.InsertOneAsync(newBudget);
         }
 
-        public async Task UpdateBudget(string id,Budget updateBudget)
+        public async Task Update(string id,Budget updateBudget)
         {
             await _budgetCollection.ReplaceOneAsync(x => x.Id == id, updateBudget);
         }
 
-        public Task ViewBudget()
+        public async Task Remove(string id)
+        {
+            await _budgetCollection.DeleteOneAsync(x => x.Id == id);
+        }
+
+        public Task View()
         {
             throw new NotImplementedException();
         }

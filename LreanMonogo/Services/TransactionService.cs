@@ -5,17 +5,9 @@ using MyFinancePal.Models;
 
 namespace MyFinancePal.Services
 {
-    public interface ITransactionService
+    public interface ITransactionService : IService<Transactions>
     {
-        public Task<List<Transactions>> GetAllAsync(string userId);
-
-        public Task<Transactions?> GetAsync(string id);
-
-        public Task AddTransaction(Transactions newTran);
-
-        public Task EditTransaction(string id, Transactions updateTran);
-
-        public Task RemoveTransaction(string id);
+       
     }
 
     public class TransactionService : ITransactionService
@@ -44,19 +36,24 @@ namespace MyFinancePal.Services
         public async Task<Transactions?> GetAsync(string id) => await _transactionsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
       
 
-        public async Task AddTransaction(Transactions newTran)
+        public async Task Create(Transactions newTran)
         {
             await _transactionsCollection.InsertOneAsync(newTran);
         }
 
-        public async Task EditTransaction(string id, Transactions updateTran)
+        public async Task Update(string id, Transactions updateTran)
         {
              await _transactionsCollection.ReplaceOneAsync(x => x.Id == id, updateTran);
         }
 
-        public async Task RemoveTransaction(string id)
+        public async Task Remove(string id)
         {
             await _transactionsCollection.DeleteOneAsync(x => x.Id == id);
+        }
+
+        public Task View()
+        {
+            throw new NotImplementedException();
         }
     }
 }

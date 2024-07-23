@@ -35,7 +35,7 @@ namespace MyFinancePal.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(Budget newBudget)
         {
-            await _budgetServiceService.CreateBudget(newBudget);
+            await _budgetServiceService.Create(newBudget);
 
             return Ok(await _budgetServiceService.GetAllAsync(newBudget.UserId));
         }
@@ -52,9 +52,24 @@ namespace MyFinancePal.Controllers
 
             updateBudget.Id = budget.Id;
 
-            await _budgetServiceService.UpdateBudget(id, updateBudget);
+            await _budgetServiceService.Update(id, updateBudget);
 
             return Ok(await _budgetServiceService.GetAllAsync(updateBudget.UserId));
+        }
+
+        [HttpDelete("{id:length(24)}")]
+        public async Task<IActionResult> Remove(string id, string userId)
+        {
+            var budget = await _budgetServiceService.GetAsync(id);
+
+            if (budget is null)
+            {
+                return NotFound();
+            }
+
+            await _budgetServiceService.Remove(id);
+
+            return Ok(await _budgetServiceService.GetAllAsync(userId));
         }
     }
 }

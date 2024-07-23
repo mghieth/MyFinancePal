@@ -35,7 +35,7 @@ namespace MyFinancePal.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(Investment newsTran)
         {
-            await _investmentService.AddInvestment(newsTran);
+            await _investmentService.Create(newsTran);
 
             return Ok(await _investmentService.GetAllAsync(newsTran.UserId));
         }
@@ -52,9 +52,24 @@ namespace MyFinancePal.Controllers
 
             updateTran.Id = investment.Id;
 
-            await _investmentService.UpdateInvestment(id, updateTran);
+            await _investmentService.Update(id, updateTran);
 
             return Ok(await _investmentService.GetAllAsync(updateTran.UserId));
+        }
+
+        [HttpDelete("{id:length(24)}")]
+        public async Task<IActionResult> Remove(string id, string userId)
+        {
+            var investment = await _investmentService.GetAsync(id);
+
+            if (investment is null)
+            {
+                return NotFound();
+            }
+
+            await _investmentService.Remove(id);
+
+            return Ok(await _investmentService.GetAllAsync(userId));
         }
     }
 }
