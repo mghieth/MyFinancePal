@@ -20,6 +20,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IBudgetService, BudgetService>();
 builder.Services.AddScoped<ISavingGoalService, SavingGoalService>();
+builder.Services.AddScoped<ISavingGoalService, SavingGoalService>();
+builder.Services.AddScoped<IInvestmentService, InvestmentService>();
 
 
 builder.Services.AddControllers().AddJsonOptions(
