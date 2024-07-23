@@ -19,6 +19,7 @@ builder.Services.AddScoped<ICoursesService, CoursesService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IBudgetService, BudgetService>();
+builder.Services.AddScoped<ISavingGoalService, SavingGoalService>();
 
 
 builder.Services.AddControllers().AddJsonOptions(

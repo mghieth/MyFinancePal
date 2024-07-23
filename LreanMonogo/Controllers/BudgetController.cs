@@ -43,14 +43,14 @@ namespace MyFinancePal.Controllers
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update(string id, Budget updateBudget)
         {
-            var student = await _budgetServiceService.GetAsync(id);
+            var budget = await _budgetServiceService.GetAsync(id);
 
-            if (student is null)
+            if (budget is null)
             {
                 return NotFound();
             }
 
-            updateBudget.Id = student.Id;
+            updateBudget.Id = budget.Id;
 
             await _budgetServiceService.UpdateBudget(id, updateBudget);
 

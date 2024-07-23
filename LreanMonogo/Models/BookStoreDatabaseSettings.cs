@@ -14,8 +14,13 @@
         public string CoursesCollectionName { get; set; } = null!;
 
         public string UsersCollectionName { get; set; } = null!;
+
         public string TransactionsCollectionName { get; set; } = null!;
+
         public string BudgetCollectionName { get; set; } = null!;
+
+        public string SavingGoalCollectionName { get; set; } = null!;
+        
 
     }
 }
