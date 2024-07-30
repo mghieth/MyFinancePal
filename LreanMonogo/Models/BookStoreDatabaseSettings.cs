@@ -24,5 +24,7 @@
 
         public string DebtCollectionName { get; set; } = null!;
 
+        public string CategoriesCollectionName { get; set; } = null!;
+
     }
 }

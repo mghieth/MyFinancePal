@@ -61,7 +61,8 @@ namespace MyFinancePal.Controllers
 
             await  _userService.UpdateProfile(id, updateUser);
 
-            return NoContent();
+            return Ok(await _userService.GetAsync(id));
+
         }
     }
 }

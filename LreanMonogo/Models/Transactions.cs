@@ -11,6 +11,8 @@ namespace MyFinancePal.Models
 
         public string? UserId { get; set; }
 
+        public string? Type { get; set; }
+
         public double Amount { get; set; }
 
         public DateTime Date { get; set; }
@@ -18,5 +20,21 @@ namespace MyFinancePal.Models
         public string? Description { get; set; }
 
         public string? Category { get; set; }
+
+        public string? PaymentMethod { get; set; }
+
+        public string? Source { get; set; }
+
+    }
+
+    public class Category
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id { get; set; }
+
+        public string? UserId { get; set; }
+
+        public string? Name { get; set; }
     }
 }

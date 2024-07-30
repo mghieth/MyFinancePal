@@ -20,5 +20,9 @@ namespace MyFinancePal.Models
         public string? PhoneNumber { get; set; }
 
         public string? Address { get; set; }
+
+        public string? CurrencyName { get; set; } = "United States dollar";
+        public string? CurrencyCode { get; set; } = "USD";
+        public string? Symbol { get; set; } = "$";
     }
 }
