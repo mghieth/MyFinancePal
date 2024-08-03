@@ -38,5 +38,10 @@ namespace MyFinancePal.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<Transactions>> GetAllAsync(string userId, TransactionFilter filter)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

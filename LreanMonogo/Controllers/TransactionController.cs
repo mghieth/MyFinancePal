@@ -18,7 +18,15 @@ namespace MyFinancePal.Controllers
 
         [HttpGet]
         public async Task<List<Transactions>> GetAllAsync(string userId) =>
-            await _transactionService.GetAllAsync(userId);
+           await _transactionService.GetAllAsync(userId);
+
+        [HttpGet()]
+        [Route("GetAllTransactionwithFilter")]
+        public async Task<List<Transactions>> GetAllTransactionsAsync(string userId, [FromQuery] TransactionFilter filter)
+        {
+            return await _transactionService.GetAllAsync(userId,filter);
+        }
+           
 
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<Transactions>> Get(string id)

@@ -15,6 +15,8 @@ namespace MyFinancePal.Models
 
         public double TotalBudget { get; set; }
 
-        public Dictionary<string,Double> AllocatedAmounts { get; set; }
+        public string? Category { get; set; }
+
+        public double RemainingAmount { get; set; }
     }
 }

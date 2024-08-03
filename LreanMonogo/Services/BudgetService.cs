@@ -12,6 +12,9 @@ namespace MyFinancePal.Services
     public class BudgetService:IBudgetService
     {
         private readonly IMongoCollection<Budget> _budgetCollection;
+        private readonly IMongoCollection<Transactions> _transactionsCollection;
+
+
 
         public BudgetService(IOptions<BookStoreDatabaseSettings> bookStoreDatabaseSettings)
         {
@@ -23,11 +26,28 @@ namespace MyFinancePal.Services
 
             _budgetCollection = mongoDatabase.GetCollection<Budget>(
                 bookStoreDatabaseSettings.Value.BudgetCollectionName);
+
+            _transactionsCollection = mongoDatabase.GetCollection<Transactions>(
+                bookStoreDatabaseSettings.Value.TransactionsCollectionName);
         }
 
         public async Task<List<Budget>> GetAllAsync(string userId)
         {
+            var transactions =  _transactionsCollection.Find(x => x.UserId == userId && x.Type == "Expense").ToList();
+
             var budgets = await _budgetCollection.Find(x => x.UserId == userId).ToListAsync();
+
+            foreach( var budget in budgets)
+            {
+                foreach( var transaction in transactions)
+                {
+                    if (budget.Category == transaction.Category)
+                    {
+                        budget.RemainingAmount += budget.TotalBudget - transaction.Amount;
+                    }
+                }
+                
+            }
             return budgets;
         }
 

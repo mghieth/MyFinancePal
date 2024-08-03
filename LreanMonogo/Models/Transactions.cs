@@ -27,6 +27,13 @@ namespace MyFinancePal.Models
 
     }
 
+    public class TransactionFilter
+    {
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+
+    }
+
     public class Category
     {
         [BsonId]

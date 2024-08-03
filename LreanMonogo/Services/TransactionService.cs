@@ -2,12 +2,14 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MyFinancePal.Models;
+using MongoDB.Driver.Linq;
 
 namespace MyFinancePal.Services
 {
     public interface ITransactionService : IService<Transactions>
     {
-       
+        public Task<List<Transactions>> GetAllAsync(string userId, TransactionFilter filter);
+
     }
 
     public class TransactionService : ITransactionService
@@ -32,6 +34,20 @@ namespace MyFinancePal.Services
 
             return transactions;
         }
+
+        public async Task<List<Transactions>> GetAllAsync(string userId, TransactionFilter filter)
+        {
+
+            var transactions = await _transactionsCollection.Find(x => x.UserId == userId).ToListAsync();
+
+            if(filter is not null)
+            {
+                transactions= transactions.Where(x=>x.Date >= filter.FromDate.AddDays(-1) && x.Date <= filter.ToDate).ToList();
+            }
+
+            return transactions;
+        }
+
 
         public async Task<Transactions?> GetAsync(string id) => await _transactionsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
       
