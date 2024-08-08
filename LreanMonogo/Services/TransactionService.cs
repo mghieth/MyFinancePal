@@ -16,7 +16,10 @@ namespace MyFinancePal.Services
     {
         private readonly IMongoCollection<Transactions> _transactionsCollection;
 
-        public TransactionService(IOptions<BookStoreDatabaseSettings> bookStoreDatabaseSettings)
+        private readonly IBudgetService _budgetService;
+
+
+        public TransactionService(IOptions<BookStoreDatabaseSettings> bookStoreDatabaseSettings, IBudgetService budgetService)
         {
             var mongoClient = new MongoClient(
                 bookStoreDatabaseSettings.Value.ConnectionString);
@@ -26,6 +29,8 @@ namespace MyFinancePal.Services
 
             _transactionsCollection = mongoDatabase.GetCollection<Transactions>(
                 bookStoreDatabaseSettings.Value.TransactionsCollectionName);
+
+            _budgetService = budgetService;
         }
 
         public async Task<List<Transactions>> GetAllAsync(string userId)
@@ -43,6 +48,11 @@ namespace MyFinancePal.Services
             if(filter is not null)
             {
                 transactions= transactions.Where(x=>x.Date >= filter.FromDate.AddDays(-1) && x.Date <= filter.ToDate).ToList();
+
+                if(filter.Category is not null)
+                {
+                    transactions= transactions.Where(x=> (x.Type == "Expense" && x.Category == filter.Category) || x.Type == "Income").ToList();
+                }
             }
 
             return transactions;
@@ -54,22 +64,48 @@ namespace MyFinancePal.Services
 
         public async Task Create(Transactions newTran)
         {
+            if(newTran.Type == "Expense") 
+                TrackingBudget(newTran);         
+            
             await _transactionsCollection.InsertOneAsync(newTran);
         }
 
         public async Task Update(string id, Transactions updateTran)
-        {
-             await _transactionsCollection.ReplaceOneAsync(x => x.Id == id, updateTran);
+        {          
+            await _transactionsCollection.ReplaceOneAsync(x => x.Id == id, updateTran);
+
+            if (updateTran.Type == "Expense")
+                TrackingBudget(updateTran);
         }
 
         public async Task Remove(string id)
         {
+            var transaction = await GetAsync(id);
+            
             await _transactionsCollection.DeleteOneAsync(x => x.Id == id);
+
+            if (transaction?.Type == "Expense")
+                TrackingBudget(transaction);
         }
 
         public Task View()
         {
             throw new NotImplementedException();
         }
+
+
+        private async void TrackingBudget(Transactions transaction)
+        {
+            var budget = (await _budgetService.GetAllAsync(transaction.UserId)).FirstOrDefault( x =>
+                x.Category == transaction.Category &&
+                x.Month.Year == transaction.Date.Year && 
+                x.Month.Month == transaction.Date.AddHours(4).Month);
+
+            if (budget != null)
+            {
+                budget.RemainingAmount = _budgetService.GetRemainingAmount(budget);
+                await _budgetService.Update(budget.Id, budget);
+            }
+        }                  
     }
 }

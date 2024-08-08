@@ -6,7 +6,8 @@ namespace MyFinancePal.Services
 {
     public interface IBudgetService:IService<Budget>
     {
-       
+        public double GetRemainingAmount(Budget budget);
+
     }
 
     public class BudgetService:IBudgetService
@@ -33,21 +34,8 @@ namespace MyFinancePal.Services
 
         public async Task<List<Budget>> GetAllAsync(string userId)
         {
-            var transactions =  _transactionsCollection.Find(x => x.UserId == userId && x.Type == "Expense").ToList();
-
             var budgets = await _budgetCollection.Find(x => x.UserId == userId).ToListAsync();
 
-            foreach( var budget in budgets)
-            {
-                foreach( var transaction in transactions)
-                {
-                    if (budget.Category == transaction.Category)
-                    {
-                        budget.RemainingAmount += budget.TotalBudget - transaction.Amount;
-                    }
-                }
-                
-            }
             return budgets;
         }
 
@@ -55,11 +43,13 @@ namespace MyFinancePal.Services
 
         public async Task Create(Budget newBudget)
         {
+            newBudget.RemainingAmount = GetRemainingAmount(newBudget);
             await _budgetCollection.InsertOneAsync(newBudget);
         }
 
         public async Task Update(string id,Budget updateBudget)
         {
+            updateBudget.RemainingAmount = GetRemainingAmount(updateBudget);
             await _budgetCollection.ReplaceOneAsync(x => x.Id == id, updateBudget);
         }
 
@@ -72,5 +62,22 @@ namespace MyFinancePal.Services
         {
             throw new NotImplementedException();
         }
+
+        public double GetRemainingAmount(Budget budget)
+        {
+            var transactionsAmount = 0.00;
+
+            var transactions = _transactionsCollection.Find(x => x.UserId == budget.UserId && x.Type == "Expense" && x.Category == budget.Category ).ToList();
+           
+             foreach (var transaction in transactions)
+             {
+                    if (budget.Month.Year == transaction.Date.Year && budget.Month.Month  == transaction.Date.AddHours(4).Month)
+                    {
+                    transactionsAmount += transaction.Amount;
+                    }
+             }
+             return transactionsAmount == 0.00 ? budget.TotalBudget : budget.TotalBudget - transactionsAmount;
+        }
+        
     }
 }
