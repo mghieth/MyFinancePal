@@ -8,7 +8,7 @@ namespace MyFinancePal.Services
 
     public interface ICategoryService : IService<Category>
     {
-
+        public Task CreateDefaultCategories(string usreId);
     }
     public class CategoryService :ICategoryService
     {
@@ -33,16 +33,7 @@ namespace MyFinancePal.Services
 
         public async Task<List<Category>> GetAllAsync(string userId)
         {
-            var defaultCategories = await _categoriesCollection.Find(x => string.IsNullOrEmpty(x.UserId) ).ToListAsync();
-
-            var spicificUser = await _categoriesCollection.Find(x => x.UserId == userId).ToListAsync();
-            if (spicificUser.Any())
-            {
-                defaultCategories.AddRange(spicificUser);
-
-            }
-            return defaultCategories;
-
+            return await _categoriesCollection.Find(x => x.UserId == userId).ToListAsync();
         }
 
         public async Task<Category?> GetAsync(string id) => await _categoriesCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
@@ -55,12 +46,20 @@ namespace MyFinancePal.Services
         public async Task Update(string id, Category updateT)
         {
             await _categoriesCollection.ReplaceOneAsync(x => x.Id == id, updateT);
-
         }
 
         public Task View()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task CreateDefaultCategories(string usreId)
+        {
+            var defaultCategories = new List<string> { "Business", "Hotel", "Food", "Eduation", "Drinks", "Fun", "Fuel", "Travel","Clothing" };
+            foreach(var category in defaultCategories)
+            {
+                await _categoriesCollection.InsertOneAsync(new Category { UserId = usreId, Name= category });
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
@@ -14,7 +15,9 @@ namespace MyFinancePal.Services
     {
         public Task<User?> GetAsync(string id);
 
-        public Task Register(User newUser);
+        public  Task<List<User>> GetAllAsync();
+
+        public Task<LoginResource> Register(User newUser);
 
         public Task<LoginResource> Login(string email, string password);
 
@@ -29,9 +32,9 @@ namespace MyFinancePal.Services
     {
         private readonly IMongoCollection<User> _usersCollection;
         private readonly IGFGEncryption _encryption;
+        private readonly ICategoryService _categoryService;
 
-
-        public UserService(IOptions<BookStoreDatabaseSettings> bookStoreDatabaseSettings, IGFGEncryption encryption)
+        public UserService(IOptions<BookStoreDatabaseSettings> bookStoreDatabaseSettings, IGFGEncryption encryption, ICategoryService categoryService)
         {
             var mongoClient = new MongoClient(
                 bookStoreDatabaseSettings.Value.ConnectionString);
@@ -42,31 +45,48 @@ namespace MyFinancePal.Services
             _usersCollection = mongoDatabase.GetCollection<User>(
                 bookStoreDatabaseSettings.Value.UsersCollectionName);
             _encryption = encryption;
+            _categoryService = categoryService;
         }
 
-        public async Task<User?> GetAsync(string id) => await _usersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task Register(User newUser)
+        public async Task<List<User>> GetAllAsync()
+        {
+           return await _usersCollection.Find(x => true).ToListAsync();
+        }
+
+        public async Task<User?> GetAsync(string id)
+        {
+            var user = await _usersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            user.Password = _encryption.decodeString(user.Password);
+            return user;
+        }
+
+        public async Task<LoginResource> Register(User newUser)
         {
             newUser.Password = _encryption.encodeString(newUser.Password);
+            if (!CheckExistingEmail(newUser.Email))
+            {
+                return new LoginResource { EmailAlreadyExist = true };
+            }
+
             await _usersCollection.InsertOneAsync(newUser);
+
+            var user = await _usersCollection.Find(x => x.Email == newUser.Email).FirstOrDefaultAsync();
+            CreateDefaultCategories(user);
+
+            return loginResource(user);
         }
 
         public async Task<LoginResource> Login(string email,string password)
         {
           var user=  await _usersCollection.Find(x => x.Email == email).FirstOrDefaultAsync();
 
-          var resource = new LoginResource();
 
-          if (user is null) return resource;
+          if (user is null) return new LoginResource();
 
-          if (_encryption.decodeString(user.Password) != password) return resource;
+          if (_encryption.decodeString(user.Password) != password) return new LoginResource();
 
-          resource.Token= Authenticate(user.Name, user.Password);
-          resource.Result = true;
-          resource.UserId = user.Id;
-
-          return resource;
+          return loginResource(user);
 
         }
 
@@ -87,7 +107,7 @@ namespace MyFinancePal.Services
             throw new NotImplementedException();
         }
 
-        public string Authenticate(string username, string password)
+        private string Authenticate(string username, string password)
         {
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes("MalekmalekMalekMalekMalekmalekMalekMalek$$$$");
@@ -109,7 +129,32 @@ namespace MyFinancePal.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
 
+        private LoginResource loginResource(User user)
+        {
+            return new LoginResource
+            {
+                Result=true,
+                Token= Authenticate(user.Name, user.Password),
+                UserId=user.Id
+        };
+
+        }
+        private async void CreateDefaultCategories(User user)
+        {
+            if(user is not null)
+            {
+                await _categoryService.CreateDefaultCategories(user.Id);
+            }
+        }
+
+
+        private bool CheckExistingEmail(string email)
+        {
+            var user =  _usersCollection.Find(x => x.Email == email).FirstOrDefaultAsync();
+
+            return user is null ? true : false;
         }
     }
 }

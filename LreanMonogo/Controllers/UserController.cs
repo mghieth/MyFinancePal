@@ -16,8 +16,12 @@ namespace MyFinancePal.Controllers
             _userService=userService;
         }
 
-
         [HttpGet]
+        public async Task<List<User>> GetAllAsync() =>
+          await _userService.GetAllAsync();
+
+
+        [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<User>> Get(string id)
         {
             var user = await _userService.GetAsync(id);
@@ -36,16 +40,12 @@ namespace MyFinancePal.Controllers
         {
             return  await _userService.Login(login.Email, login.Password);
         }
+
         [HttpPost]
-        public async Task<IActionResult> Post(User newsUser)
+        public async Task<ActionResult<LoginResource>> Post(User newsUser)
         {
-            await _userService.Register(newsUser);
-
-             return CreatedAtAction(nameof(Get), new {id = newsUser.Id}, newsUser);
-
-            //return Ok();
+             return await _userService.Register(newsUser);
         }
-
 
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update(string id, User updateUser)
