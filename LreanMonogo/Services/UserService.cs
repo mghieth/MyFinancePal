@@ -28,8 +28,10 @@ namespace MyFinancePal.Services
     public class UserService : IUserService
     {
         private readonly IMongoCollection<User> _usersCollection;
+        private readonly IGFGEncryption _encryption;
 
-        public UserService(IOptions<BookStoreDatabaseSettings> bookStoreDatabaseSettings)
+
+        public UserService(IOptions<BookStoreDatabaseSettings> bookStoreDatabaseSettings, IGFGEncryption encryption)
         {
             var mongoClient = new MongoClient(
                 bookStoreDatabaseSettings.Value.ConnectionString);
@@ -39,13 +41,14 @@ namespace MyFinancePal.Services
 
             _usersCollection = mongoDatabase.GetCollection<User>(
                 bookStoreDatabaseSettings.Value.UsersCollectionName);
-
+            _encryption = encryption;
         }
 
         public async Task<User?> GetAsync(string id) => await _usersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
         public async Task Register(User newUser)
         {
+            newUser.Password = _encryption.encodeString(newUser.Password);
             await _usersCollection.InsertOneAsync(newUser);
         }
 
@@ -57,7 +60,7 @@ namespace MyFinancePal.Services
 
           if (user is null) return resource;
 
-          if (user.Password != password) return resource;
+          if (_encryption.decodeString(user.Password) != password) return resource;
 
           resource.Token= Authenticate(user.Name, user.Password);
           resource.Result = true;
@@ -74,6 +77,8 @@ namespace MyFinancePal.Services
 
         public async Task UpdateProfile(string id,User updateUser)
         {
+            updateUser.Password = _encryption.encodeString(updateUser.Password);
+
             await _usersCollection.ReplaceOneAsync(x => x.Id == id, updateUser);
         }
 
